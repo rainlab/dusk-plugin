@@ -1,0 +1,11 @@
+{
+    "name": "rainlab/dusk-plugin",
+    "type": "october-plugin",
+    "description": "Browser testing for October CMS, powered by Laravel Dusk.",
+    "require": {
+        "composer/installers": "~1.0"
+    },
+    "require-dev": {
+        "laravel/dusk": "^7.4"
+    }
+}
