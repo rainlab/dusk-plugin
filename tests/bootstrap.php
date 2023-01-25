@@ -7,7 +7,9 @@ require_once __DIR__ . '/../../../../modules/system/tests/bootstrap.php';
 require 'BrowserTestCase.php';
 
 // Macros
-\Laravel\Dusk\Browser::macro('ajaxRequest', function($element = null) {
-    $this->script("$('$element').request()");
+\Laravel\Dusk\Browser::macro('ajaxRequest', function($element = null, $handler = null) {
+    $element = $element ? "'".$element."'" : '';
+    $handler = $handler ? "'".$handler."'" : '';
+    $this->script("$($element).request($handler)");
     return $this;
 });
