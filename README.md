@@ -10,8 +10,6 @@ To install with Composer, run from your project root
 composer require rainlab/dusk-plugin
 ```
 
-> **Warning**: This plugin is intended for local environments only. Do not install this plugin in any production environment, ever.
-
 ## Defining Tests
 
 To make your first test, create a new class inside the **tests/browser** folder. The following will authenticate to the backend panel and sign out again.
