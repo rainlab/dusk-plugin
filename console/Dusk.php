@@ -1,12 +1,13 @@
 <?php namespace RainLab\Dusk\Console;
 
-use Dotenv\Dotenv;
-use Illuminate\Console\Command;
-use Illuminate\Support\Str;
+use System\Classes\PluginManager;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
+use Illuminate\Console\Command;
+use Illuminate\Support\Str;
+use Dotenv\Dotenv;
 
 class Dusk extends Command
 {
@@ -15,7 +16,7 @@ class Dusk extends Command
      *
      * @var string
      */
-    protected $signature = 'test:dusk
+    protected $signature = 'test:dusk {name}
                 {--browse : Open a browser instead of using headless mode}
                 {--without-tty : Disable output to TTY}
                 {--pest : Run the tests using Pest}';
@@ -53,6 +54,10 @@ class Dusk extends Command
      */
     public function handle()
     {
+        if (!PluginManager::instance()->hasPlugin($name = $this->pluginCode())) {
+            return $this->output->error("Unable to find plugin [{$name}]");
+        }
+
         $this->purgeScreenshots();
 
         $this->purgeConsoleLogs();
@@ -60,7 +65,7 @@ class Dusk extends Command
         $this->purgeSourceLogs();
 
         $options = collect($_SERVER['argv'])
-            ->slice(2)
+            ->slice(3)
             ->diff(['--browse', '--without-tty'])
             ->values()
             ->all();
@@ -80,7 +85,8 @@ class Dusk extends Command
                 return $process->run(function ($type, $line) {
                     $this->output->write($line);
                 });
-            } catch (ProcessSignaledException $e) {
+            }
+            catch (ProcessSignaledException $e) {
                 if (extension_loaded('pcntl') && $e->getSignal() !== SIGINT) {
                     throw $e;
                 }
@@ -271,7 +277,7 @@ class Dusk extends Command
         //     return;
         // }
 
-        Dotenv::createMutable($this->basePath())->load();
+        Dotenv::createMutable(base_path())->load();
     }
 
     /**
@@ -286,7 +292,6 @@ class Dusk extends Command
             !file_exists($this->pluginPath('phpunit.dusk.xml.dist'))
         ) {
             copy($this->basePath('stubs/phpunit.dusk.xml.stub'), $file);
-
             return;
         }
 
@@ -377,6 +382,14 @@ class Dusk extends Command
      */
     protected function pluginPath($path = '')
     {
-        return base_path('plugins/october/test/'.$path);
+        return PluginManager::instance()->getPluginPath($this->pluginCode()) . '/' . $path;
+    }
+
+    /**
+     * pluginCode
+     */
+    protected function pluginCode()
+    {
+        return PluginManager::instance()->normalizeIdentifier($this->argument('name'));
     }
 }
