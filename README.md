@@ -71,6 +71,10 @@ Use the `--filter` option to run a single test where the value is the test class
 php artisan test:dusk october.test --filter=PeopleTest
 ```
 
+### See Also
+
+- [Laravel Dusk](https://laravel.com/docs/9.x/dusk)
+
 ### License
 
 This plugin is an official extension of the October CMS platform and is free to use if you have a platform license. See [EULA license](https://octobercms.com/eula) for more details.
