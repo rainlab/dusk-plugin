@@ -27,6 +27,6 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-        $this->registerConsoleCommand('test.dusk', \October\Test\Console\Dusk::class);
+        $this->registerConsoleCommand('test.dusk', \RainLab\Dusk\Console\Dusk::class);
     }
 }

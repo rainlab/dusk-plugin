@@ -1,4 +1,4 @@
-<?php namespace October\Test\Console;
+<?php namespace RainLab\Dusk\Console;
 
 use Dotenv\Dotenv;
 use Illuminate\Console\Command;
@@ -117,11 +117,11 @@ class Dusk extends Command
     protected function phpunitArguments($options)
     {
         $options = array_values(array_filter($options, function ($option) {
-            return ! Str::startsWith($option, ['--env=', '--pest']);
+            return !Str::startsWith($option, ['--env=', '--pest']);
         }));
 
-        if (! file_exists($file = $this->basePath('phpunit.dusk.xml'))) {
-            $file = $this->basePath('phpunit.dusk.xml.dist');
+        if (!file_exists($file = $this->pluginPath('phpunit.dusk.xml'))) {
+            $file = $this->pluginPath('phpunit.dusk.xml.dist');
         }
 
         return array_merge(['-c', $file], $options);
@@ -147,7 +147,7 @@ class Dusk extends Command
     protected function purgeScreenshots()
     {
         $this->purgeDebuggingFiles(
-            $this->basePath('tests/Browser/screenshots'), 'failure-*'
+            $this->pluginPath('tests/browser/screenshots'), 'failure-*'
         );
     }
 
@@ -159,7 +159,7 @@ class Dusk extends Command
     protected function purgeConsoleLogs()
     {
         $this->purgeDebuggingFiles(
-            $this->basePath('tests/Browser/console'), '*.log'
+            $this->pluginPath('tests/browser/console'), '*.log'
         );
     }
 
@@ -171,7 +171,7 @@ class Dusk extends Command
     protected function purgeSourceLogs()
     {
         $this->purgeDebuggingFiles(
-            $this->basePath('tests/Browser/source'), '*.txt'
+            $this->pluginPath('tests/browser/source'), '*.txt'
         );
     }
 
@@ -189,8 +189,8 @@ class Dusk extends Command
         }
 
         $files = Finder::create()->files()
-                       ->in($path)
-                       ->name($patterns);
+            ->in($path)
+            ->name($patterns);
 
         foreach ($files as $file) {
             @unlink($file->getRealPath());
@@ -209,7 +209,8 @@ class Dusk extends Command
 
         try {
             return $callback();
-        } finally {
+        }
+        finally {
             $this->teardownDuskEnviroment();
         }
     }
@@ -221,9 +222,11 @@ class Dusk extends Command
      */
     protected function setupDuskEnvironment()
     {
-        if (file_exists($this->basePath($this->duskFile()))) {
-            if (file_exists($this->basePath('.env')) &&
-                file_get_contents($this->basePath('.env')) !== file_get_contents($this->basePath($this->duskFile()))) {
+        if (file_exists(base_path($this->duskFile()))) {
+            if (
+                file_exists(base_path('.env')) &&
+                file_get_contents(base_path('.env')) !== file_get_contents(base_path($this->duskFile()))
+            ) {
                 $this->backupEnvironment();
             }
 
@@ -242,9 +245,9 @@ class Dusk extends Command
      */
     protected function backupEnvironment()
     {
-        copy($this->basePath('.env'), $this->basePath('.env.backup'));
+        copy(base_path('.env'), base_path('.env.backup'));
 
-        copy($this->basePath($this->duskFile()), $this->basePath('.env'));
+        copy(base_path($this->duskFile()), base_path('.env'));
     }
 
     /**
@@ -254,19 +257,19 @@ class Dusk extends Command
      */
     protected function refreshEnvironment()
     {
-        // BC fix to support Dotenv ^2.2...
-        if (! method_exists(Dotenv::class, 'create')) {
-            (new Dotenv($this->basePath()))->overload();
+        // // BC fix to support Dotenv ^2.2...
+        // if (! method_exists(Dotenv::class, 'create')) {
+        //     (new Dotenv($this->basePath()))->overload();
 
-            return;
-        }
+        //     return;
+        // }
 
-        // BC fix to support Dotenv ^3.0...
-        if (! method_exists(Dotenv::class, 'createMutable')) {
-            Dotenv::create($this->basePath())->overload();
+        // // BC fix to support Dotenv ^3.0...
+        // if (! method_exists(Dotenv::class, 'createMutable')) {
+        //     Dotenv::create($this->basePath())->overload();
 
-            return;
-        }
+        //     return;
+        // }
 
         Dotenv::createMutable($this->basePath())->load();
     }
@@ -278,9 +281,11 @@ class Dusk extends Command
      */
     protected function writeConfiguration()
     {
-        if (! file_exists($file = $this->basePath('phpunit.dusk.xml')) &&
-            ! file_exists($this->basePath('phpunit.dusk.xml.dist'))) {
-            copy(realpath(__DIR__.'/../../stubs/phpunit.xml'), $file);
+        if (
+            !file_exists($file = $this->pluginPath('phpunit.dusk.xml')) &&
+            !file_exists($this->pluginPath('phpunit.dusk.xml.dist'))
+        ) {
+            copy($this->basePath('stubs/phpunit.dusk.xml.stub'), $file);
 
             return;
         }
@@ -313,7 +318,7 @@ class Dusk extends Command
     {
         $this->removeConfiguration();
 
-        if (file_exists($this->basePath($this->duskFile())) && file_exists($this->basePath('.env.backup'))) {
+        if (file_exists(base_path($this->duskFile())) && file_exists(base_path('.env.backup'))) {
             $this->restoreEnvironment();
         }
     }
@@ -325,7 +330,10 @@ class Dusk extends Command
      */
     protected function removeConfiguration()
     {
-        if (! $this->hasPhpUnitConfiguration && file_exists($file = $this->basePath('phpunit.dusk.xml'))) {
+        if (
+            !$this->hasPhpUnitConfiguration &&
+            file_exists($file = $this->pluginPath('phpunit.dusk.xml'))
+        ) {
             unlink($file);
         }
     }
@@ -337,9 +345,9 @@ class Dusk extends Command
      */
     protected function restoreEnvironment()
     {
-        copy($this->basePath('.env.backup'), $this->basePath('.env'));
+        copy(base_path('.env.backup'), base_path('.env'));
 
-        unlink($this->basePath('.env.backup'));
+        unlink(base_path('.env.backup'));
     }
 
     /**
@@ -349,7 +357,7 @@ class Dusk extends Command
      */
     protected function duskFile()
     {
-        if (file_exists($this->basePath($file = '.env.dusk.'.$this->laravel->environment()))) {
+        if (file_exists(base_path($file = '.env.dusk.'.$this->laravel->environment()))) {
             return $file;
         }
 
@@ -362,5 +370,13 @@ class Dusk extends Command
     protected function basePath($path = '')
     {
         return base_path('plugins/rainlab/dusk/'.$path);
+    }
+
+    /**
+     * pluginPath
+     */
+    protected function pluginPath($path = '')
+    {
+        return base_path('plugins/october/test/'.$path);
     }
 }
