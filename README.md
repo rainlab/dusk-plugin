@@ -10,6 +10,18 @@ To install with Composer, run from your project root
 composer require rainlab/dusk-plugin
 ```
 
+If using the latest version of Chrome, install the latest version of ChromeDriver for your OS.
+
+```bash
+php artisan dusk:chrome-driver
+```
+
+Otherwise, check the version of the Chrome browser you have installed, and install a given version of ChromeDriver for your OS.
+
+```bash
+php artisan dusk:chrome-driver 86
+```
+
 ## Defining Tests
 
 To make your first test, create a new class inside the **tests/browser** folder. The following will authenticate to the backend panel and sign out again.
