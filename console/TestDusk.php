@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Dotenv\Dotenv;
 
-class Dusk extends Command
+class TestDusk extends Command
 {
     /**
      * The name and signature of the console command.
