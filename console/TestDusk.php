@@ -48,7 +48,7 @@ class TestDusk extends Command
     }
 
     /**
-     * Execute the console command.
+     * handle executes the console command.
      *
      * @return mixed
      */
