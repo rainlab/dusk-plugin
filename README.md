@@ -99,11 +99,11 @@ Follow these instructions to get a test up and running.
 
 1. Install a [fresh copy of October CMS](https://docs.octobercms.com/)
 
-1. Installed this plugin `composer require rainlab/dusk-plugin`
+1. Install this plugin `composer require rainlab/dusk-plugin`
 
-1. Installed latest chrome driver `php artisan dusk:chrome-driver`
+1. Install latest chrome driver `php artisan dusk:chrome-driver`
 
-1. Installed [Test plugin](https://github.com/octobercms/test-plugin) `php artisan plugin:install October.Test --from=https://github.com/octobercms/test-plugin`
+1. Install [Test plugin](https://github.com/octobercms/test-plugin) `php artisan plugin:install October.Test --from=https://github.com/octobercms/test-plugin`
 
 1. Create a file `.env.dusk` and include `APP_URL=http://yourlocaldev.tld` inside
 
