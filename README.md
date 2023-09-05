@@ -57,6 +57,14 @@ class AuthenticationTest extends BrowserTestCase
 }
 ```
 
+## Creating Environment File
+
+The `.env.dusk` environment file can be used for Dusk specific configuration. It is advisable to include the application URL to test in this file.
+
+```bash
+APP_URL=http://mylocalsite.dev/
+```
+
 ## Running Tests
 
 Use the `test:dusk` artisan command to run the dusk tests for a plugin code (first argument).
@@ -82,6 +90,24 @@ Use the `--filter` option to run a single test where the value is the test class
 ```
 php artisan test:dusk october.test --filter=PeopleTest
 ```
+
+## End to End Example
+
+Follow these instructions to get a test up and running.
+
+1. Install the [latest version of Chrome](https://www.google.com.au/chrome/) browser
+
+1. Install a [fresh copy of October CMS](https://docs.octobercms.com/)
+
+1. Installed this plugin `composer require rainlab/dusk-plugin`
+
+1. Installed latest chrome driver `php artisan dusk:chrome-driver`
+
+1. Installed [Test plugin](https://github.com/octobercms/test-plugin) `php artisan plugin:install October.Test --from=https://github.com/octobercms/test-plugin`
+
+1. Create a file `.env.dusk` and include `APP_URL=http://yourlocaldev.tld` inside
+
+1. Run tests `php artisan test:dusk october.test --browse`
 
 ### See Also
 
