@@ -67,6 +67,10 @@ abstract class BrowserTestCase extends DuskTestCase
                 '--disable-gpu',
                 '--headless',
             ]);
+        })->when($this->hasDevShmUsageDisabled(), function (Collection $items) {
+            return $items->merge([
+                '--disable-dev-shm-usage',
+            ]);
         })->all());
 
         return RemoteWebDriver::create(
@@ -84,6 +88,15 @@ abstract class BrowserTestCase extends DuskTestCase
     {
         return isset($_SERVER['DUSK_HEADLESS_DISABLED']) ||
                isset($_ENV['DUSK_HEADLESS_DISABLED']);
+    }
+
+    /**
+     * Determine if we should disable dev SHM usage in chromedriver
+     */
+    protected function hasDevShmUsageDisabled(): bool
+    {
+        return isset($_SERVER['DUSK_DEV_SHM_USAGE_DISABLED']) ||
+               isset($_ENV['DUSK_DEV_SHM_USAGE_DISABLED']);
     }
 
     /**
