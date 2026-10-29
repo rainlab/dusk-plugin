@@ -24,10 +24,10 @@ php artisan dusk:chrome-driver 86
 
 ## Defining Tests
 
-To make your first test, create a new class inside the **tests/browser** folder. The following will authenticate to the backend panel and sign out again.
+To make your first test, create a new class inside the **tests/browser** folder of your plugin. The following will authenticate to the backend panel and sign out again.
 
 ```php
-// File: plugins/october/test/tests/browser/AuthenticationTest.php
+// File: plugins/acme/blog/tests/browser/AuthenticationTest.php
 //
 class AuthenticationTest extends BrowserTestCase
 {
@@ -44,7 +44,7 @@ class AuthenticationTest extends BrowserTestCase
                 ->press('Login');
 
             $browser
-                ->waitForLocation('/admin')
+                ->waitForLocation('/admin/dashboard')
                 ->assertTitleContains('Dashboard |')
                 ->click('#layout-mainmenu .mainmenu-account > a')
                 ->clickLink('Sign Out');
@@ -59,10 +59,12 @@ class AuthenticationTest extends BrowserTestCase
 
 ## Creating Environment File
 
-The `.env.dusk` environment file can be used for Dusk specific configuration. It is advisable to include the application URL to test in this file.
+The `.env.dusk` environment file can be used for Dusk specific configuration. It is advisable to include the application URL to test in this file, along with the administrator credentials used by the example test above.
 
 ```bash
 APP_URL=http://mylocalsite.dev/
+DUSK_ADMIN_USER=admin
+DUSK_ADMIN_PASS=admin
 ```
 
 ## Running Tests
@@ -73,22 +75,22 @@ Use the `test:dusk` artisan command to run the dusk tests for a plugin code (fir
 php artisan test:dusk <PLUGIN CODE>
 ```
 
-The following runs tests for the October.Test plugin.
+The following runs tests for the Acme.Blog plugin.
 
 ```bash
-php artisan test:dusk october.test
+php artisan test:dusk acme.blog
 ```
 
 Use the `--browse` to enable interactive mode.
 
 ```bash
-php artisan test:dusk october.test --browse
+php artisan test:dusk acme.blog --browse
 ```
 
 Use the `--filter` option to run a single test where the value is the test class name.
 
 ```
-php artisan test:dusk october.test --filter=PeopleTest
+php artisan test:dusk acme.blog --filter=AuthenticationTest
 ```
 
 ## End to End Example
@@ -103,11 +105,13 @@ Follow these instructions to get a test up and running.
 
 1. Install latest chrome driver `php artisan dusk:chrome-driver`
 
-1. Install [Test plugin](https://github.com/octobercms/test-plugin) `php artisan plugin:install October.Test --from=https://github.com/octobercms/test-plugin`
+1. Create a plugin to hold the tests `php artisan create:plugin Acme.Blog`
 
-1. Create a file `.env.dusk` and include `APP_URL=http://yourlocaldev.tld` inside
+1. Save the `AuthenticationTest` class from [Defining Tests](#defining-tests) as `plugins/acme/blog/tests/browser/AuthenticationTest.php`
 
-1. Run tests `php artisan test:dusk october.test --browse`
+1. Create a file `.env.dusk` and include `APP_URL=http://yourlocaldev.tld` inside, along with `DUSK_ADMIN_USER` and `DUSK_ADMIN_PASS` if your administrator is not admin/admin
+
+1. Run tests `php artisan test:dusk acme.blog --browse`
 
 ### See Also
 
