@@ -3,7 +3,6 @@
     "type": "october-plugin",
     "description": "Browser testing for October CMS, powered by Laravel Dusk.",
     "require": {
-        "composer/installers": "~1.0",
-        "laravel/dusk": "^7.4"
+        "laravel/dusk": "^7.4|^8.0"
     }
 }
